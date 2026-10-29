@@ -4,6 +4,7 @@ import {
   getDeliveryArea,
   isValidBdPhone,
 } from '@/lib/products';
+import { isSupabaseConfigured, insertOrder } from '@/lib/supabase';
 
 // POST /api/order — validates the order, recomputes totals server-side
 // from the shared price table, and returns the confirmed order object.
@@ -86,17 +87,20 @@ export async function POST(request) {
     status: 'pending',
   };
 
-  // ────────────────────────────────────────────────────────────────
-  // TODO (later phase): save the order to Supabase.
-  // The user deferred order storage/viewing, so for now the order is
-  // only logged. When ready, insert here, e.g.:
-  //
-  //   import { createClient } from ... // supabase client
-  //   await supabase.from('orders').insert(order);
-  //
-  // and build the /admin panel on top of that table.
-  // ────────────────────────────────────────────────────────────────
+  // Always log the order (visible in server/Vercel logs).
   console.log('[NEW ORDER]', JSON.stringify(order));
+
+  // Persist to Supabase when configured (see lib/supabase.js). A
+  // database failure must NEVER fail the customer's order — the order
+  // is already confirmed above, so we only log the outcome here.
+  if (isSupabaseConfigured()) {
+    const saved = await insertOrder(order);
+    if (saved.ok) {
+      console.log('[ORDER SAVED]', order.id);
+    } else {
+      console.error('[ORDER SAVE FAILED]', order.id, saved.error);
+    }
+  }
 
   return NextResponse.json({ ok: true, order });
 }
