@@ -1,9 +1,6 @@
 import { NextResponse } from 'next/server';
-import {
-  getProduct,
-  getDeliveryArea,
-  isValidBdPhone,
-} from '@/lib/products';
+import { isValidBdPhone } from '@/lib/products';
+import { getCatalog, findProduct, findArea } from '@/lib/catalog';
 import { isSupabaseConfigured, insertOrder } from '@/lib/supabase';
 
 // POST /api/order — validates the order, recomputes totals server-side
@@ -22,8 +19,11 @@ export async function POST(request) {
   const name = String(body.name || '').trim();
   const phone = String(body.phone || '').trim();
   const address = String(body.address || '').trim();
-  const product = getProduct(body.productId);
-  const area = getDeliveryArea(body.areaId);
+  // Prices are read from the database (admin-editable) with static
+  // fallbacks — totals below are computed from THIS data only.
+  const catalog = await getCatalog();
+  const product = findProduct(catalog, body.productId);
+  const area = findArea(catalog, body.areaId);
   const quantity = Number(body.quantity);
 
   if (name.length < 3) {

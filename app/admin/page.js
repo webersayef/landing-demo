@@ -1,4 +1,5 @@
 import { redirect } from 'next/navigation';
+import Link from 'next/link';
 import { isAdminAuthed } from '@/lib/adminAuth';
 import { isSupabaseConfigured, listOrders } from '@/lib/supabase';
 import { formatBDT } from '@/lib/products';
@@ -34,7 +35,10 @@ export default async function AdminPage() {
       <main className="admin-wrap">
         <div className="admin-header">
           <h1>অর্ডারসমূহ</h1>
-          <LogoutButton />
+          <div className="admin-actions">
+            <Link href="/admin/product" className="admin-nav-link">প্রোডাক্ট ও দাম</Link>
+            <LogoutButton />
+          </div>
         </div>
         <div className="admin-notice">
           <strong>ডাটাবেস এখনো সেটআপ হয়নি।</strong>
@@ -61,7 +65,10 @@ export default async function AdminPage() {
     <main className="admin-wrap">
       <div className="admin-header">
         <h1>অর্ডারসমূহ</h1>
-        <LogoutButton />
+        <div className="admin-actions">
+          <Link href="/admin/product" className="admin-nav-link">প্রোডাক্ট ও দাম</Link>
+          <LogoutButton />
+        </div>
       </div>
 
       {!result.ok && (

@@ -273,3 +273,24 @@ a { color: var(--accent); }
 .status-ok { color: var(--green); font-weight: 600; }
 .status-err { color: #c62828; font-weight: 600; }
 
+
+/* ── Admin: nav + product settings (Phase 3) ─────── */
+.admin-actions { display: flex; gap: 10px; align-items: center; }
+.admin-nav-link {
+  font-weight: 600; font-size: 15px; text-decoration: none;
+  color: var(--accent); background: #fff;
+  border: 1.5px solid var(--accent); border-radius: 9px;
+  padding: 7px 13px;
+}
+.admin-nav-link:hover { background: var(--bg-soft); }
+.settings-group {
+  border: 1px solid var(--line); border-radius: 12px;
+  padding: 16px; margin-bottom: 14px; display: grid; gap: 12px;
+}
+.settings-group h2 { font-size: 18px; }
+.settings-save { width: 100%; margin-top: 4px; }
+.save-ok {
+  background: #e7f7ee; border: 1px solid #bfe8cf; color: #146c2e;
+  border-radius: 10px; padding: 11px 14px; font-weight: 500;
+  margin-bottom: 12px;
+}

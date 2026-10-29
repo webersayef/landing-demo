@@ -1,10 +1,13 @@
 import Link from 'next/link';
 import ImageSlider from '@/components/ImageSlider';
 import { formatBDT } from '@/lib/products';
+import { getCatalog } from '@/lib/catalog';
+
+// Prices come from the database (editable in /admin/product), so
+// this page renders fresh on every request.
+export const dynamic = 'force-dynamic';
 
 const PRODUCT_NAME = 'SoundPro X9 ওয়্যারলেস হেডফোন';
-const OFFER_PRICE = 1250;
-const REGULAR_PRICE = 1800;
 const PHONE = '01741-783703';
 
 const SLIDER_IMAGES = [
@@ -23,7 +26,11 @@ const BENEFITS = [
   'হালকা ও ভাঁজ করা যায় — ভ্রমণে সহজে বহনযোগ্য',
 ];
 
-export default function HomePage() {
+export default async function HomePage() {
+  const { products } = await getCatalog();
+  const OFFER_PRICE = products[0].price;
+  const REGULAR_PRICE = products[0].regularPrice;
+
   return (
     <main>
       {/* ── Slim top bar ─────────────────────────────── */}
