@@ -98,9 +98,13 @@ export default function CheckoutForm({ products, areas }) {
                 checked={p.id === productId}
                 onChange={() => setProductId(p.id)}
               />
+              {p.image ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={p.image} alt="" className="option-thumb" />
+              ) : null}
               <span className="option-info">
                 <strong>{p.name}</strong>
-                <small>SoundPro X9 ওয়্যারলেস হেডফোন</small>
+                <small>{p.subtitle || 'SoundPro X9 ওয়্যারলেস হেডফোন'}</small>
               </span>
               <span className="option-price">
                 {formatBDT(p.price)}

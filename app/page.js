@@ -1,9 +1,9 @@
-import Link from 'next/link';
 import ImageSlider from '@/components/ImageSlider';
+import CheckoutForm from '@/components/CheckoutForm';
 import { formatBDT } from '@/lib/products';
 import { getCatalog } from '@/lib/catalog';
 
-// Prices come from the database (editable in /admin/product), so
+// Prices come from the database (editable in /admin/products), so
 // this page renders fresh on every request.
 export const dynamic = 'force-dynamic';
 
@@ -27,7 +27,7 @@ const BENEFITS = [
 ];
 
 export default async function HomePage() {
-  const { products } = await getCatalog();
+  const { products, areas } = await getCatalog();
   const OFFER_PRICE = products[0].price;
   const REGULAR_PRICE = products[0].regularPrice;
 
@@ -61,9 +61,9 @@ export default async function HomePage() {
           </span>
         </div>
 
-        <Link href="/checkout" className="cta-btn">
+        <a href="#checkout" className="cta-btn">
           অর্ডার করুন
-        </Link>
+        </a>
         <p className="hero-note">🚚 ক্যাশ অন ডেলিভারি — পণ্য হাতে পেয়ে মূল্য পরিশোধ করুন</p>
       </section>
 
@@ -104,9 +104,14 @@ export default async function HomePage() {
           <strong>{formatBDT(OFFER_PRICE)}</strong>{' '}
           <s>{formatBDT(REGULAR_PRICE)}</s>
         </p>
-        <Link href="/checkout" className="cta-btn">
+        <a href="#checkout" className="cta-btn">
           অর্ডার করুন
-        </Link>
+        </a>
+      </section>
+
+      {/* ── CHECKOUT (same page — buttons scroll here) ── */}
+      <section id="checkout" className="checkout-section">
+        <CheckoutForm products={products} areas={areas} />
       </section>
 
       <footer className="footer">
@@ -123,9 +128,9 @@ export default async function HomePage() {
           <strong>{formatBDT(OFFER_PRICE)}</strong>
           <s>{formatBDT(REGULAR_PRICE)}</s>
         </div>
-        <Link href="/checkout" className="cta-btn sticky-btn">
+        <a href="#checkout" className="cta-btn sticky-btn">
           অর্ডার করুন
-        </Link>
+        </a>
       </div>
     </main>
   );

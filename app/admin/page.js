@@ -1,17 +1,23 @@
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { isAdminAuthed } from '@/lib/adminAuth';
-import { isSupabaseConfigured, listOrders } from '@/lib/supabase';
+import {
+  isSupabaseConfigured,
+  listOrders,
+  listProductRows,
+} from '@/lib/supabase';
 import { formatBDT } from '@/lib/products';
-import LogoutButton from './LogoutButton';
-import StatusSelect from './StatusSelect';
 
-// Always render fresh — orders must never come from a static cache.
+// Admin dashboard (Phase 4): overview stats + latest orders.
+// Rendered inside the sidebar shell from app/admin/layout.js.
 export const dynamic = 'force-dynamic';
 
-const AREA_LABELS = {
-  inside: 'ঢাকার ভিতরে',
-  outside: 'ঢাকার বাইরে',
+const STATUS_LABELS = {
+  pending: 'নতুন',
+  confirmed: 'কনফার্ম',
+  shipped: 'কুরিয়ারে পাঠানো হয়েছে',
+  delivered: 'ডেলিভার্ড',
+  cancelled: 'ক্যান্সেল',
 };
 
 function formatTime(iso) {
@@ -25,57 +31,42 @@ function formatTime(iso) {
   }
 }
 
-export default async function AdminPage() {
+export default async function AdminDashboardPage() {
   if (!(await isAdminAuthed())) {
     redirect('/admin/login');
   }
 
   if (!isSupabaseConfigured()) {
     return (
-      <main className="admin-wrap">
-        <div className="admin-header">
-          <h1>অর্ডারসমূহ</h1>
-          <div className="admin-actions">
-            <Link href="/admin/product" className="admin-nav-link">প্রোডাক্ট ও দাম</Link>
-            <LogoutButton />
-          </div>
-        </div>
+      <div>
+        <h1 className="page-title">ড্যাশবোর্ড</h1>
         <div className="admin-notice">
           <strong>ডাটাবেস এখনো সেটআপ হয়নি।</strong>
           <p>
-            অর্ডার দেখতে সার্ভারে <code>SUPABASE_URL</code> এবং{' '}
+            সার্ভারে <code>SUPABASE_URL</code> এবং{' '}
             <code>SUPABASE_SERVICE_ROLE_KEY</code> এনভায়রনমেন্ট ভ্যারিয়েবল
-            সেট করতে হবে (Vercel → Project → Settings → Environment
-            Variables), তারপর Redeploy করতে হবে। বিস্তারিত ধাপ README.md-তে
-            দেওয়া আছে।
+            সেট করতে হবে। বিস্তারিত ধাপ README.md-তে দেওয়া আছে।
           </p>
         </div>
-      </main>
+      </div>
     );
   }
 
-  const result = await listOrders();
-  const orders = result.ok ? result.data : [];
+  const [ordersRes, productsRes] = await Promise.all([
+    listOrders(),
+    listProductRows(),
+  ]);
+  const orders = ordersRes.ok ? ordersRes.data : [];
+  const productCount = productsRes.ok ? productsRes.data.length : 0;
   const pendingCount = orders.filter((o) => o.status === 'pending').length;
   const totalSales = orders
     .filter((o) => o.status !== 'cancelled')
     .reduce((sum, o) => sum + (Number(o.total) || 0), 0);
+  const recent = orders.slice(0, 5);
 
   return (
-    <main className="admin-wrap">
-      <div className="admin-header">
-        <h1>অর্ডারসমূহ</h1>
-        <div className="admin-actions">
-          <Link href="/admin/product" className="admin-nav-link">প্রোডাক্ট ও দাম</Link>
-          <LogoutButton />
-        </div>
-      </div>
-
-      {!result.ok && (
-        <div className="form-error">
-          অর্ডারের তালিকা আনা যায়নি: {result.error}
-        </div>
-      )}
+    <div>
+      <h1 className="page-title">ড্যাশবোর্ড</h1>
 
       <div className="stats-row">
         <div className="stat-card">
@@ -90,13 +81,23 @@ export default async function AdminPage() {
           <span className="stat-value">{formatBDT(totalSales)}</span>
           <span className="stat-label">মোট বিক্রি</span>
         </div>
+        <div className="stat-card">
+          <span className="stat-value">{productCount}</span>
+          <span className="stat-label">মোট প্রোডাক্ট</span>
+        </div>
       </div>
 
-      {orders.length === 0 ? (
+      <div className="dash-actions">
+        <Link href="/admin/orders" className="cta-btn dash-btn">🧾 সব অর্ডার দেখুন</Link>
+        <Link href="/admin/products/new" className="cta-btn dash-btn alt">➕ Add New Product</Link>
+      </div>
+
+      <h2 className="section-title">সাম্প্রতিক অর্ডার</h2>
+      {recent.length === 0 ? (
         <p className="admin-empty">এখনো কোনো অর্ডার আসেনি।</p>
       ) : (
         <div className="order-list">
-          {orders.map((o) => (
+          {recent.map((o) => (
             <article key={o.id} className="order-card">
               <div className="order-card-top">
                 <span className="order-id">{o.id}</span>
@@ -107,21 +108,17 @@ export default async function AdminPage() {
                 {' · '}
                 <a href={`tel:${o.phone}`}>{o.phone}</a>
               </div>
-              <p className="order-address">{o.address}</p>
               <div className="order-meta">
                 <span>
                   {o.product_name} × {o.quantity}
                 </span>
-                <span>{AREA_LABELS[o.delivery_area] || o.delivery_area}</span>
-              </div>
-              <div className="order-card-bottom">
+                <span>{STATUS_LABELS[o.status] || o.status}</span>
                 <span className="order-total">{formatBDT(o.total)}</span>
-                <StatusSelect orderId={o.id} initialStatus={o.status} />
               </div>
             </article>
           ))}
         </div>
       )}
-    </main>
+    </div>
   );
 }

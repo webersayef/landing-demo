@@ -294,3 +294,80 @@ a { color: var(--accent); }
   border-radius: 10px; padding: 11px 14px; font-weight: 500;
   margin-bottom: 12px;
 }
+
+/* ── Admin shell: WordPress-style sidebar (Phase 4) ── */
+.admin-shell { display: flex; min-height: 100vh; align-items: stretch; }
+.admin-sidebar {
+  width: 232px; flex-shrink: 0; background: #141a26; color: #e5e7eb;
+  display: flex; flex-direction: column; padding: 18px 12px;
+  position: sticky; top: 0; height: 100vh;
+}
+.sidebar-brand { font-weight: 800; font-size: 19px; color: #fff; padding: 2px 10px 14px; }
+.sidebar-brand span { display: block; font-size: 13px; font-weight: 500; color: #94a3b8; margin-top: 2px; }
+.sidebar-nav { display: grid; gap: 4px; }
+.sidebar-link {
+  color: #cbd5e1; text-decoration: none; padding: 10px 12px;
+  border-radius: 9px; font-size: 15.5px; font-weight: 500; display: block;
+}
+.sidebar-link:hover { background: rgba(255, 255, 255, .08); color: #fff; }
+.sidebar-link.active { background: var(--accent); color: #fff; }
+.sidebar-link.sub { margin-left: 14px; font-size: 14.5px; }
+.sidebar-footer { margin-top: auto; padding-top: 14px; }
+.admin-sidebar .admin-logout-btn {
+  width: 100%; color: #fff; border-color: rgba(255, 255, 255, .35);
+  background: transparent;
+}
+.admin-sidebar .admin-logout-btn:hover { background: rgba(255, 255, 255, .1); }
+.admin-main { flex: 1; min-width: 0; max-width: 900px; padding: 22px 20px 48px; }
+.page-title { font-size: 24px; margin-bottom: 16px; }
+.section-title { font-size: 19px; margin: 22px 0 10px; }
+.page-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.add-btn { padding: 10px 16px; font-size: 15px; text-decoration: none; }
+.dash-actions { display: flex; gap: 10px; flex-wrap: wrap; margin: 14px 0 4px; }
+.dash-btn { text-decoration: none; padding: 12px 16px; font-size: 15.5px; }
+.dash-btn.alt { background: #fff; color: var(--accent); border: 1.5px solid var(--accent); }
+.settings-note { color: var(--muted); font-size: 14.5px; }
+.check-row { display: flex; gap: 9px; align-items: center; font-weight: 500; align-self: end; padding-bottom: 12px; }
+.check-row input { width: 18px; height: 18px; }
+
+/* ── Admin: product list ──────────────────────────── */
+.product-row { display: flex; gap: 14px; align-items: center; }
+.product-thumb { width: 56px; height: 56px; object-fit: cover; border-radius: 10px; border: 1px solid var(--line); }
+.product-info { flex: 1; min-width: 0; display: grid; gap: 2px; }
+.product-info small { color: var(--muted); }
+.product-price { font-weight: 700; color: var(--accent); }
+.product-price s { color: var(--muted); margin-left: 6px; font-weight: 400; }
+.product-side { display: grid; gap: 8px; justify-items: end; }
+.active-badge { font-size: 12.5px; font-weight: 700; padding: 2px 9px; border-radius: 999px; }
+.active-badge.on { background: #e7f7ee; color: #146c2e; }
+.active-badge.off { background: #f3f4f6; color: #6b7280; }
+.product-actions { display: flex; gap: 8px; }
+.edit-btn {
+  text-decoration: none; font-weight: 600; font-size: 14px;
+  border: 1.5px solid var(--accent); color: var(--accent);
+  border-radius: 8px; padding: 6px 11px; background: #fff;
+}
+.danger-btn {
+  font-weight: 600; font-size: 14px; cursor: pointer;
+  border: 1.5px solid #e02424; color: #e02424;
+  border-radius: 8px; padding: 6px 11px; background: #fff;
+}
+.option-thumb { width: 46px; height: 46px; object-fit: cover; border-radius: 9px; border: 1px solid var(--line); flex-shrink: 0; }
+
+@media (max-width: 840px) {
+  .admin-shell { flex-direction: column; }
+  .admin-sidebar { width: 100%; height: auto; position: static; }
+  .sidebar-nav { display: flex; overflow-x: auto; padding-bottom: 4px; }
+  .sidebar-link { white-space: nowrap; }
+  .sidebar-link.sub { margin-left: 0; }
+  .sidebar-footer { margin-top: 10px; }
+  .admin-main { padding: 18px 14px 40px; }
+}
+
+/* ── Single-page checkout (Phase 4.1) ─────────────── */
+html { scroll-behavior: smooth; }
+.checkout-section {
+  background: var(--bg-soft);
+  border-top: 1px solid #ffe3d3;
+  scroll-margin-top: 10px;
+}

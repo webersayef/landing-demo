@@ -1,12 +1,8 @@
-import { getCatalog } from '@/lib/catalog';
-import CheckoutForm from './CheckoutForm';
+import { redirect } from 'next/navigation';
 
-// Prices come from the database (editable in /admin/product), so
-// this page renders fresh on every request and hands the data to
-// the client form as props.
-export const dynamic = 'force-dynamic';
-
-export default async function CheckoutPage() {
-  const { products, areas } = await getCatalog();
-  return <CheckoutForm products={products} areas={areas} />;
+// Phase 4.1: the checkout form now lives at the bottom of the
+// (single-page) landing page. Keep old /checkout links working
+// by sending them to the form's anchor on the home page.
+export default function CheckoutRedirectPage() {
+  redirect('/#checkout');
 }
