@@ -8,6 +8,7 @@ const LINKS = [
   { href: '/admin/orders', label: '🧾 অর্ডারসমূহ' },
   { href: '/admin/products', label: '📦 প্রোডাক্ট' },
   { href: '/admin/products/new', label: '➕ Add New Product', sub: true },
+  { href: '/admin/pages', label: '📄 ল্যান্ডিং পেজসমূহ' },
   { href: '/admin/settings', label: '⚙️ সেটিংস' },
 ];
 

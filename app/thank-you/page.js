@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { trackPurchase } from '@/components/FacebookPixel';
+import PixelPurchase from '@/components/PixelPurchase';
 import { formatBDT } from '@/lib/products';
 
 export default function ThankYouPage() {
@@ -46,6 +47,7 @@ export default function ThankYouPage() {
 
   return (
     <main>
+      <PixelPurchase order={order} />
       <div className="thanks-wrap">
         <div className="thanks-icon">✅</div>
         <h1>ধন্যবাদ! আপনার অর্ডারটি সফলভাবে গৃহীত হয়েছে 🎉</h1>

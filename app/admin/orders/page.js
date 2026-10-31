@@ -74,12 +74,33 @@ export default async function AdminOrdersPage() {
                 <a href={`tel:${o.phone}`}>{o.phone}</a>
               </div>
               <p className="order-address">{o.address}</p>
-              <div className="order-meta">
-                <span>
-                  {o.product_name} × {o.quantity}
-                </span>
-                <span>{AREA_LABELS[o.delivery_area] || o.delivery_area}</span>
-              </div>
+              {Array.isArray(o.items) && o.items.length ? (
+                <>
+                  <div className="order-items">
+                    {o.items.map((item, i) => (
+                      <span key={i}>
+                        {item.name} ×{item.quantity} —{' '}
+                        {formatBDT(
+                          (Number(item.price) || 0) * (Number(item.quantity) || 0)
+                        )}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="order-meta">
+                    <span>{AREA_LABELS[o.delivery_area] || o.delivery_area}</span>
+                    {o.page_slug ? (
+                      <span className="page-tag">/lp/{o.page_slug}</span>
+                    ) : null}
+                  </div>
+                </>
+              ) : (
+                <div className="order-meta">
+                  <span>
+                    {o.product_name} × {o.quantity}
+                  </span>
+                  <span>{AREA_LABELS[o.delivery_area] || o.delivery_area}</span>
+                </div>
+              )}
               <div className="order-card-bottom">
                 <span className="order-total">{formatBDT(o.total)}</span>
                 <StatusSelect orderId={o.id} initialStatus={o.status} />

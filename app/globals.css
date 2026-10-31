@@ -371,3 +371,30 @@ html { scroll-behavior: smooth; }
   border-top: 1px solid #ffe3d3;
   scroll-margin-top: 10px;
 }
+
+/* ── Phase 5: landing pages, multi orders, uploads ── */
+.order-items { display: grid; gap: 2px; font-size: 15px; color: #374151; }
+.page-tag {
+  background: #eef2ff; color: #3730a3; border-radius: 999px;
+  padding: 1px 9px; font-size: 13px; font-weight: 600;
+}
+.line-qty { margin: -2px 0 12px 6px; }
+.picker-row {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; border: 1px solid var(--line); border-radius: 10px;
+  padding: 10px 12px;
+}
+.picker-main { display: flex; align-items: center; gap: 9px; font-weight: 500; cursor: pointer; }
+.picker-main input { width: 18px; height: 18px; accent-color: var(--accent); }
+.picker-main .active-badge { margin-left: 8px; }
+.picker-sort { display: flex; align-items: center; gap: 7px; font-size: 14.5px; color: var(--muted); }
+.picker-sort input {
+  width: 76px; font-family: inherit; font-size: 15.5px;
+  padding: 8px 9px; border: 1.5px solid var(--line); border-radius: 8px;
+}
+.picker-sort input:disabled { opacity: .4; }
+.upload-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.thumb-preview {
+  width: 84px; height: 84px; object-fit: cover;
+  border-radius: 10px; border: 1px solid var(--line);
+}

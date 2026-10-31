@@ -22,8 +22,12 @@ export default function FacebookPixel() {
           t.src=v;s=b.getElementsByTagName(e)[0];
           s.parentNode.insertBefore(t,s)}(window, document,'script',
           'https://connect.facebook.net/en_US/fbevents.js');
-          fbq('init', '${PIXEL_ID}');
-          fbq('track', 'PageView');
+          window.__pixelInited = window.__pixelInited || [];
+          if (window.__pixelInited.indexOf('${PIXEL_ID}') === -1) {
+            fbq('init', '${PIXEL_ID}');
+            fbq('track', 'PageView');
+            window.__pixelInited.push('${PIXEL_ID}');
+          }
         `}
       </Script>
       <noscript>

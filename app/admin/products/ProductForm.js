@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 // Shared add/edit product form for /admin/products.
@@ -20,6 +20,39 @@ export default function ProductForm({ initial }) {
   );
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
+  const fileRef = useRef(null);
+  const [uploading, setUploading] = useState(false);
+
+  // Upload the chosen file to /api/admin/upload and fill the
+  // image URL field with the returned public URL (Phase 5).
+  async function handleFile(e) {
+    const file = e.target.files && e.target.files[0];
+    e.target.value = '';
+    if (!file) return;
+    setUploading(true);
+    setError('');
+    try {
+      const form = new FormData();
+      form.append('file', file);
+      const res = await fetch('/api/admin/upload', {
+        method: 'POST',
+        body: form,
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.ok || !data.url) {
+        throw new Error(data.error || 'upload failed');
+      }
+      setValues((prev) => ({ ...prev, image: data.url }));
+    } catch (err) {
+      setError(
+        err.message === 'upload failed'
+          ? 'ছবি আপলোড করা যায়নি, আবার চেষ্টা করুন।'
+          : err.message
+      );
+    } finally {
+      setUploading(false);
+    }
+  }
 
   function set(field) {
     return (e) => {
@@ -124,6 +157,28 @@ export default function ProductForm({ initial }) {
             value={values.image}
             onChange={set('image')}
           />
+          <div className="upload-row">
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp,image/gif"
+              hidden
+              onChange={handleFile}
+            />
+            <button
+              type="button"
+              className="edit-btn"
+              disabled={uploading}
+              onClick={() => fileRef.current && fileRef.current.click()}
+            >
+              {uploading ? 'আপলোড হচ্ছে…' : '📷 ছবি আপলোড করুন'}
+            </button>
+            <span className="settings-note">সর্বোচ্চ ৪ MB — JPG, PNG, WebP বা GIF</span>
+          </div>
+          {values.image ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={values.image} alt="" className="thumb-preview" />
+          ) : null}
         </div>
         <div className="form-grid">
           <div className="field">
